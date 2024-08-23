@@ -18,7 +18,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String targetUrl = "/userHome"; // Default for USERS
 
         if (userDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"))) {
-            targetUrl = "/adminHome";
+            targetUrl = "/home";
         }
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Update User</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    .container {
+      max-width: 800px;
+    }
+    .form-container {
+      margin-top: 20px;
+    }
+    .back-button {
+      margin-bottom: 20px;
+    }
+    .update-button {
+      margin-top: 20px;
+    }
+    .header-center {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .input-group .input-group-append .btn {
+      margin-left: 10px;
+    }
+    .btn-margin {
+      margin-top: 0px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="#" th:href="@{/Update}" class="btn btn-secondary">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+  </div>
+
+  <div class="header-center">
+    <h2>Update User</h2>
+  </div>
+
+  <div class="form-container">
+    <form th:action="@{/updateuser}" method="get">
+      <div class="input-group mb-3">
+        <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Enter IC Number" th:value="${userDetails != null ? userDetails.userId : ''}" required>
+        <div class="col-md-3 mb-2 btn-margin">
+          <button type="submit" class="btn btn-primary btn-block">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div th:if="${userDetails != null}" class="form-container">
+    <h3>User Found</h3>
+    <form th:action="@{/updateUser}" method="post">
+      <input type="hidden" name="user_id" th:value="${userDetails.userId}"/>
+
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" class="form-control" th:value="${userDetails.firstName}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" class="form-control" th:value="${userDetails.lastName}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNo">Phone Number (+60)</label>
+        <input type="text" id="phoneNo" name="phoneNo" class="form-control" th:value="${userDetails.phoneNo}" required>
+      </div>
+
+      <button type="submit" class="btn btn-success update-button">Update User</button>
+    </form>
+  </div>
+
+  <!-- Message Display -->
+  <div th:if="${message}" class="alert alert-info mt-4">
+    <p th:text="${message}"></p>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

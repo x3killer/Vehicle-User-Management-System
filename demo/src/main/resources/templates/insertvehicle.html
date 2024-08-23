@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insert Vehicle</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .btn-secondary {
+      background-color: #6c757d;
+      border: none;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <a href="#" th:href="@{/insert}" class="btn btn-secondary">
+    <i class="fa fa-arrow-left"></i>
+  </a>
+  <header class="mb-4">
+    <h1 class="text-center">Insert New Vehicle</h1>
+  </header>
+  <form id="vehicleForm" action="/insertVehicle" method="post" th:action="@{/insertVehicle}">
+    <!-- CSRF Token -->
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+    <div class="form-group">
+      <label for="userID">IC Number:</label>
+      <input type="text" id="userID" name="userID" class="form-control" placeholder="xxxxxx-xx-xxxx" required>
+    </div>
+
+    <div class="form-group">
+      <label for="plateNo">Number Plate:</label>
+      <input type="text" id="plateNo" name="plateNo" class="form-control" placeholder="ABC1234" required>
+    </div>
+
+    <div class="form-group">
+      <label for="vehicleType">Vehicle Type:</label>
+      <select id="vehicleType" name="vehicleType" class="form-control" required>
+        <option value="" disabled selected>Select Vehicle Type</option>
+        <option value="Motorcar">Motorcar</option>
+        <option value="Motorcycle">Motorcycle</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" name="brand" class="form-control" placeholder="Toyota" required>
+    </div>
+
+    <div class="form-group">
+      <label for="model">Model:</label>
+      <input type="text" id="model" name="model" class="form-control" placeholder="Corolla" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Insert Vehicle</button>
+  </form>
+
+  <div id="message" class="mt-3">
+    <p th:text="${message}" class="alert alert-info"></p>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

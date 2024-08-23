@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:,">
+    <style>
+        .page-header {
+          margin-bottom: 30px;
+        }
+        .form-section, .details-section {
+          margin-bottom: 30px;
+        }
+        .alert {
+          margin-top: 20px;
+        }
+        .form-group {
+          margin-bottom: 0;
+        }
+        .form-control, .btn {
+          height: calc(2.25rem + 2px);
+        }
+        .btn-margin {
+          margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="#" th:href="@{/userHome}" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    <div class="page-header">
+        <h1 class="mt-4 mb-4 text-center">Vehicle Owned by User</h1>
+    </div>
+
+    <div class="form-section">
+        <form action="/showusercar" method="get">
+            <div class="form-row align-items-center">
+                <div class="col-md-9 mb-2">
+                    <div class="form-group">
+                        <label for="userIC">Enter IC Number</label>
+                        <input type="text" id="userIC" name="user_id" class="form-control" placeholder="xxxxxx-xx-xxxx" required>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-2 btn-margin">
+                    <button type="submit" class="btn btn-primary btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Display Message -->
+    <div th:if="${message}" class="alert alert-warning" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div th:if="${userDetails}" class="details-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-4">User Information</h2>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>User IC Number:</strong> <span th:text="${userDetails.userID}"></span></p>
+                <p><strong>Name:</strong> <span th:text="${userDetails.lastName}"></span> <span th:text="${userDetails.firstName}"></span></p>
+                <p><strong>Phone Number: (+60)</strong> <span th:text="${userDetails.phoneNo}"></span></p>
+            </div>
+        </div>
+
+        <h3 class="mt-4 mb-4">Vehicles Owned</h3>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Vehicle Type</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="vehicle : ${userDetails.vehicles}">
+                        <td th:text="${vehicle.plateNo}"></td>
+                        <td th:text="${vehicle.vehicleType}"></td>
+                        <td th:text="${vehicle.brand}"></td>
+                        <td th:text="${vehicle.model}"></td>
+                    </tr>
+                    <tr th:unless="${userDetails.vehicles}" class="text-center">
+                        <td colspan="4">No vehicles found for this user.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

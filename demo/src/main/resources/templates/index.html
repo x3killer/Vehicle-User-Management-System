@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Interface</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 500px;">
+        <div class="card-body text-center">
+            <h1 class="card-title mb-4">Menu</h1>
+            <div class="d-grid gap-3">
+                <a href="#" th:href="@{/insert}" class="btn btn-primary btn-lg">Insert New Data</a>
+                <a href="#" th:href="@{/show}" class="btn btn-primary btn-lg">Display Data</a>
+                <a href="#"  th:href="@{/Update}" class="btn btn-primary btn-lg">Update Data</a>
+                <a href="#" th:href="@{/delete}" class="btn btn-danger btn-lg">Delete Data</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

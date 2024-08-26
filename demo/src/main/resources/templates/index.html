@@ -9,13 +9,18 @@
 <body class="bg-light">
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="card shadow-lg p-4" style="width: 100%; max-width: 500px;">
-        <div class="card-body text-center">
-            <h1 class="card-title mb-4">Menu</h1>
-            <div class="d-grid gap-3">
-                <a href="#" th:href="@{/insert}" class="btn btn-primary btn-lg">Insert New Data</a>
-                <a href="#" th:href="@{/show}" class="btn btn-primary btn-lg">Display Data</a>
-                <a href="#"  th:href="@{/Update}" class="btn btn-primary btn-lg">Update Data</a>
-                <a href="#" th:href="@{/delete}" class="btn btn-danger btn-lg">Delete Data</a>
+        <div class="card-body">
+            <div class="d-flex justify-content-end mb-4">
+                <a href="#" th:href="@{/logout}" class="btn btn-outline-danger btn-sm">Logout</a>
+            </div>
+            <div class="text-center">
+                <h1 class="card-title mb-4">Menu</h1>
+                <div class="d-grid gap-3">
+                    <a href="#" th:href="@{/insert}" class="btn btn-primary btn-lg">Insert New Data</a>
+                    <a href="#" th:href="@{/show}" class="btn btn-primary btn-lg">Display Data</a>
+                    <a href="#" th:href="@{/update}" class="btn btn-primary btn-lg">Update Data</a>
+                    <a href="#" th:href="@{/delete}" class="btn btn-danger btn-lg">Delete Data</a>
+                </div>
             </div>
         </div>
     </div>

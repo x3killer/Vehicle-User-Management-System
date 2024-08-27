@@ -33,6 +33,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/registration", "/css/**").permitAll()
                         .requestMatchers("/home").hasAuthority("ADMIN")
+                        .requestMatchers("/deletevehicle","/deleteuser","/delete","/show","/showuser","/showvehicle"
+                                ,"/insert","/insertuser","/insertvehicle","/Update","/updateuser","/updatevehicle",
+                                "/showuserCar").hasAuthority("ADMIN")
                         .requestMatchers("/userHome").hasAuthority("USER")
                         .anyRequest().authenticated()
                 )

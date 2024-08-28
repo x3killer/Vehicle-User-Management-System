@@ -80,7 +80,7 @@
               type: 'POST',
               contentType: 'application/json',
               headers: {
-                  [csrfHeader]: csrfToken // Include CSRF token in headers
+                  [csrfHeader]: csrfToken
               },
               data: JSON.stringify(user),
               success: function(response) {

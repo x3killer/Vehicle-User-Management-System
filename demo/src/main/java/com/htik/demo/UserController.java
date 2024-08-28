@@ -4,9 +4,7 @@ package com.htik.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -70,20 +68,22 @@ public class UserController {
     }
 
     @PostMapping("/Userinsert")
-    public String userinsert(@RequestParam("userID") String userID,
-                             @RequestParam("firstName") String firstName,
-                             @RequestParam("lastName") String lastName,
-                             @RequestParam("phoneNo") String phoneNo,
-                             Model model) {
+    @ResponseBody
+    public String userinsert(@RequestBody User user, Model model) {
+
+        String userID = user.getUserId();
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String phoneNo = user.getPhoneNo();
 
         if (!userService.isValidICNumber(userID)) {
             model.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
-            return "insertuser";
+            return "userinsert";
         }
 
         if (userService.checkUserExists(userID)) {
             model.addAttribute("message", "IC number already exists. Please enter a different IC number.");
-            return "insertuser";
+            return "userinsert";
         }
 
         if (userService.insertUser(userID, firstName, lastName, phoneNo)) {
@@ -101,32 +101,34 @@ public class UserController {
     }
 
     @PostMapping("/Vehicleinsert")
-    public String vehicleinsert (@RequestParam("userID") String userID,
-                                @RequestParam("plateNo") String plateNo,
-                                @RequestParam("vehicleType") String vehicleType,
-                                @RequestParam("brand") String brand,
-                                @RequestParam("model") String model,
-                                Model modelAttribute) {
+    @ResponseBody
+    public String vehicleinsert(@RequestBody vehicle vehicle,Model model) {
+        String userID = vehicle.getUserId();
+        String plateNo = vehicle.getPlateNo();
+        String brand = vehicle.getBrand();
+        String carModel = vehicle.getModel();
+        String vehicleType = vehicle.getVehicleType();
+
 
         if (!userService.isValidICNumber(userID)) {
-            modelAttribute.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
+            model.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
             return "vehicleinsert";
         }
 
         if (!userService.checkUserExists(userID)) {
-            modelAttribute.addAttribute("message", "User with this IC number does not exist. Please enter a valid IC number.");
+            model.addAttribute("message", "User with this IC number does not exist. Please enter a valid IC number.");
             return "vehicleinsert";
         }
 
         if (!userService.checkPlateAvailable(plateNo)) {
-            modelAttribute.addAttribute("message", "Plate number already exists. Please enter a different plate number.");
+            model.addAttribute("message", "Plate number already exists. Please enter a different plate number.");
             return "vehicleinsert";
         }
 
-        if (userService.insertVehicle(plateNo, vehicleType, brand, model, userID)) {
-            modelAttribute.addAttribute("message", "Vehicle inserted successfully.");
+        if (userService.insertVehicle(plateNo, vehicleType, brand, carModel, userID)) {
+            model.addAttribute("message", "Vehicle inserted successfully.");
         } else {
-            modelAttribute.addAttribute("message", "Error inserting vehicle. Please try again.");
+            model.addAttribute("message", "Error inserting vehicle. Please try again.");
         }
 
         return "vehicleinsert";

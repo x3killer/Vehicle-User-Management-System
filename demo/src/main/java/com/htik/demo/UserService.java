@@ -98,7 +98,6 @@ public class UserService {
             details.setVehicles(vehicles);
 
         } catch (Exception e) {
-            // Handle exception (e.g., logging)
             e.printStackTrace();
             return null;
         }

@@ -2,9 +2,14 @@ package com.htik.demo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -68,31 +73,35 @@ public class UserController {
     }
 
     @PostMapping("/Userinsert")
-    @ResponseBody
-    public String userinsert(@RequestBody User user, Model model) {
-
+    public ResponseEntity<Map<String, String>> insertUser(@RequestBody User user) {
+        Map<String, String> response = new HashMap<>();
         String userID = user.getUserId();
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String phoneNo = user.getPhoneNo();
 
         if (!userService.isValidICNumber(userID)) {
-            model.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
-            return "userinsert";
+            response.put("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
+            response.put("messageType", "error");
+            return ResponseEntity.badRequest().body(response);
         }
 
         if (userService.checkUserExists(userID)) {
-            model.addAttribute("message", "IC number already exists. Please enter a different IC number.");
-            return "userinsert";
+            response.put("message", "IC number already exists. Please enter a different IC number.");
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
-        if (userService.insertUser(userID, firstName, lastName, phoneNo)) {
-            model.addAttribute("message", "User inserted successfully.");
+        boolean isInserted = userService.insertUser(userID, firstName, lastName, phoneNo);
+        if (isInserted) {
+            response.put("message", "User inserted successfully.");
+            response.put("messageType", "success");
+            return ResponseEntity.ok(response);
         } else {
-            model.addAttribute("message", "Error inserting user. Please try again.");
+            response.put("message", "Error inserting user. Please try again.");
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return "userinsert";
     }
 
     @GetMapping("/vehicleinsert")

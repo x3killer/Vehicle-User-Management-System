@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delete Vehicle</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <style>
     body {
         font-family: Arial, sans-serif;
@@ -68,6 +71,8 @@
         color: red;
     }
   </style>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <div class="container">
@@ -75,29 +80,55 @@
     <i class="fa fa-arrow-left"></i>
   </a>
   <h1>Delete Vehicle</h1>
-  <form th:action="@{/deleteVehicle}" method="post" onsubmit="return validateForm();">
+  <form id="deleteVehicleForm" action="#" method="post">
     <div class="form-group">
-      <label for="plateNo">Enter Vehicle Plate Number</label>
-      <input type="text" id="plateNo" name="plateNo" placeholder="Enter vehicle plate number" required>
+      <label for="vehiclePlate">Enter Vehicle Plate Number</label>
+      <input type="text" id="vehiclePlate" name="vehiclePlate" placeholder="Enter vehicle plate number" required>
     </div>
     <div class="form-group">
       <button type="submit">Delete</button>
     </div>
-    <div class="message" th:if="${message != null}" th:classappend="${messageType}" th:text="${message}"></div>
+    <div class="message" id="message"></div>
   </form>
 </div>
-
 <script>
-  function validateForm() {
-      const plateNo = document.getElementById('plateNo').value.trim();
+  $(document).ready(function() {
+    $('#deleteVehicleForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
 
-      if (plateNo === '') {
-          alert('Please enter a plate number.');
-          return false;
-      }
+        const plateNo = $('#vehiclePlate').val().trim();
+        const messageDiv = $('#message');
 
-      return confirm(`Are you sure you want to delete the vehicle with plate number ${plateNo}?`);
-  }
+        if (plateNo === '') {
+            alert('Please enter a plate number.');
+            return false;
+        }
+
+        if (!confirm(`Are you sure you want to delete the vehicle with plate number ${plateNo}?`)) {
+            return false;
+        }
+
+        $.ajax({
+            url: '/demo-0.0.1-SNAPSHOT/deleteVehicle',
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [ $('meta[name="_csrf_header"]').attr('content') ]: $('meta[name="_csrf"]').attr('content') // CSRF token handling
+            },
+            data: {
+                'plateNo': plateNo
+            },
+            success: function(response) {
+                $('#message').html('<p class="alert alert-info">' + response.message + '</p>').removeClass('alert-danger').addClass('alert-info');
+            },
+            error: function(xhr, status, error) {
+                const errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.';
+                $('#message').html('<p class="alert alert-danger">' + errorMessage + '</p>').removeClass('alert-info').addClass('alert-danger');
+            }
+        });
+    });
+});
+
 </script>
 </body>
 </html>

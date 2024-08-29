@@ -107,34 +107,18 @@ public class UserService {
     }
 
     public boolean deleteVehicleByPlateNo(String plateNo) {
-        String checkSql = "SELECT * FROM Vehicle WHERE plateNo = ?";
+        String checkSql = "SELECT COUNT(*) FROM Vehicle WHERE plateNo = ?";
         String deleteSql = "DELETE FROM Vehicle WHERE plateNo = ?";
 
         try {
-            List<vehicle> vehicles = jdbcTemplate.query(checkSql, new Object[]{plateNo}, (rs, rowNum) -> {
-                vehicle vehicle = new vehicle();
-                vehicle.setPlateNo(rs.getString("plateNo"));
-                vehicle.setVehicleType(rs.getString("vehicleType"));
-                vehicle.setBrand(rs.getString("brand"));
-                vehicle.setModel(rs.getString("model"));
-                vehicle.setUserId(rs.getString("user_id"));
-                return vehicle;
-            });
+            // Check if the vehicle exists
+            int count = jdbcTemplate.queryForObject(checkSql, new Object[]{plateNo}, Integer.class);
 
-            if (!vehicles.isEmpty()) {
-                vehicle vehicle = vehicles.get(0);
-
-                System.out.println("Vehicle found:");
-                System.out.println("Plate Number: " + vehicle.getPlateNo());
-                System.out.println("Vehicle Type: " + vehicle.getVehicleType());
-                System.out.println("Brand: " + vehicle.getBrand());
-                System.out.println("Model: " + vehicle.getModel());
-                System.out.println("User ID: " + vehicle.getUserId());
-
+            if (count > 0) {
+                // Vehicle exists, proceed to delete
                 int rowsDeleted = jdbcTemplate.update(deleteSql, plateNo);
                 return rowsDeleted > 0;
             } else {
-                System.out.println("Plate Number not found: " + plateNo);
                 return false;
             }
 

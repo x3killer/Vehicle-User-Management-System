@@ -1,12 +1,16 @@
 package com.htik.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MyController {
@@ -163,40 +167,45 @@ public class MyController {
     }
 
     @PostMapping("/deleteVehicle")
-    public String deleteVehicle(@RequestParam("plateNo") String plateNo, Model model) {
+    public ResponseEntity<Map<String, String>> deleteVehicle(@RequestParam("plateNo") String plateNo) {
+        Map<String, String> response = new HashMap<>();
+
         if (plateNo == null || plateNo.trim().isEmpty()) {
-            model.addAttribute("message", "Plate number is required.");
-            return "deletevehicle";
+            response.put("message", "Plate number is required.");
+            return ResponseEntity.badRequest().body(response);
         }
 
-        boolean isDeleted = userService.deleteVehicleByPlateNo(plateNo);
+        boolean isDeleted = userService.deleteVehicleByPlateNo(plateNo); // Call service to delete vehicle
         if (isDeleted) {
-            model.addAttribute("message", "Vehicle with plate number " + plateNo + " deleted successfully.");
+            response.put("message", "Vehicle with plate number " + plateNo + " deleted successfully.");
+            return ResponseEntity.ok(response);
         } else {
-            model.addAttribute("message", "No vehicle found with plate number " + plateNo + ".");
+            response.put("message", "No vehicle found with plate number " + plateNo + ".");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        return "deletevehicle";
     }
 
     @PostMapping("/deleteuser")
-    public String deleteUser(@RequestParam("userIC") String userIC, Model model) {
+    public ResponseEntity<Map<String, String>> deleteUser(@RequestParam("userIC") String userIC) {
+        Map<String, String> response = new HashMap<>();
         String icFormat = "^\\d{6}-\\d{2}-\\d{4}$";
+
         if (!userIC.matches(icFormat)) {
-            model.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
-            model.addAttribute("messageType", "error");
-            return "deleteuser";
+            response.put("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
+            response.put("messageType", "error");
+            return ResponseEntity.badRequest().body(response);
         }
 
         boolean isDeleted = userService.deleteUserByIC(userIC);
         if (isDeleted) {
-            model.addAttribute("message", "User deleted successfully.");
-            model.addAttribute("messageType", "success");
+            response.put("message", "User deleted successfully.");
+            response.put("messageType", "success");
+            return ResponseEntity.ok(response);
         } else {
-            model.addAttribute("message", "No user found with IC number: " + userIC);
-            model.addAttribute("messageType", "error");
+            response.put("message", "No user found with IC number: " + userIC);
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return "deleteuser";
     }
 
     @GetMapping("/updatevehicle")

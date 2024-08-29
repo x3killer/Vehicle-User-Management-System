@@ -78,7 +78,6 @@ public class UserService {
         details.setUserID(userIC);
 
         try {
-            // Fetch user details
             jdbcTemplate.queryForObject(userSql, new Object[]{userIC}, (rs, rowNum) -> {
                 details.setFirstName(rs.getString("first_name"));
                 details.setLastName(rs.getString("last_name"));
@@ -86,7 +85,6 @@ public class UserService {
                 return details;
             });
 
-            // Fetch vehicle details
             List<vehicle> vehicles = jdbcTemplate.query(vehicleSql, new Object[]{userIC}, (rs, rowNum) -> {
                 vehicle vehicle = new vehicle();
                 vehicle.setPlateNo(rs.getString("plateNo"));

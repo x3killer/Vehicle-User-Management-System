@@ -73,37 +73,42 @@ public class MyController {
     }
 
     @PostMapping("/insertVehicle")
-    @ResponseBody
-    public String insertVehicle(@RequestBody vehicle vehicle,Model model) {
+    public ResponseEntity<Map<String, String>> insertVehicle(@RequestBody vehicle vehicle) {
+        Map<String, String> response = new HashMap<>();
         String userID = vehicle.getUserId();
         String plateNo = vehicle.getPlateNo();
         String brand = vehicle.getBrand();
         String carModel = vehicle.getModel();
         String vehicleType = vehicle.getVehicleType();
 
-
         if (!userService.isValidICNumber(userID)) {
-            model.addAttribute("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
-            return "insertvehicle";
+            response.put("message", "Invalid IC number format. Please enter a valid IC number (xxxxxx-xx-xxxx).");
+            response.put("messageType", "error");
+            return ResponseEntity.badRequest().body(response);
         }
 
         if (!userService.checkUserExists(userID)) {
-            model.addAttribute("message", "User with this IC number does not exist. Please enter a valid IC number.");
-            return "insertvehicle";
+            response.put("message", "User with this IC number does not exist. Please enter a valid IC number.");
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         if (!userService.checkPlateAvailable(plateNo)) {
-            model.addAttribute("message", "Plate number already exists. Please enter a different plate number.");
-            return "insertvehicle";
+            response.put("message", "Plate number already exists. Please enter a different plate number.");
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
-        if (userService.insertVehicle(plateNo, vehicleType, brand, carModel, userID)) {
-            model.addAttribute("message", "Vehicle inserted successfully.");
+        boolean isInserted = userService.insertVehicle(plateNo, vehicleType, brand, carModel, userID);
+        if (isInserted) {
+            response.put("message", "Vehicle inserted successfully.");
+            response.put("messageType", "success");
+            return ResponseEntity.ok(response);
         } else {
-            model.addAttribute("message", "Error inserting vehicle. Please try again.");
+            response.put("message", "Error inserting vehicle. Please try again.");
+            response.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return "insertvehicle";
     }
 
     @PostMapping("/insertUser")

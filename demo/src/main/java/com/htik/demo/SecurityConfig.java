@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/deletevehicle","/deleteuser","/delete","/show","/showuser","/showvehicle"
                                 ,"/insert","/insertuser","/insertvehicle","/Update","/updateuser","/updatevehicle",
                                 "/showuserCar").hasAuthority("ADMIN")
-                        .requestMatchers("/userHome").hasAuthority("USER")
+                        .requestMatchers("/userHome","Userinsertmenu","userupdate","userinsert"
+                        ,"vehicleinsert","vehicleupdate","caruser").hasAuthority("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

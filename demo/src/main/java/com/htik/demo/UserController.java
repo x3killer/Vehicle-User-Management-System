@@ -46,20 +46,19 @@ public class UserController {
 
 
     @PostMapping("/Vehicleupdate")
-    public String updateVehicle(@RequestParam("plateNo") String plateNo,
-                                @RequestParam("vehicleType") String vehicleType,
-                                @RequestParam("brand") String brand,
-                                @RequestParam("model") String model,
-                                Model modelAttribute) {
-
+    @ResponseBody
+    public Map<String, String> updateVehicle(@RequestParam("plateNo") String plateNo,
+                                             @RequestParam("vehicleType") String vehicleType,
+                                             @RequestParam("brand") String brand,
+                                             @RequestParam("model") String model) {
         boolean isUpdated = userService.updateVehicle(plateNo, vehicleType, brand, model);
+        Map<String, String> response = new HashMap<>();
         if (isUpdated) {
-            modelAttribute.addAttribute("message", "Vehicle updated successfully.");
+            response.put("message", "Vehicle updated successfully.");
         } else {
-            modelAttribute.addAttribute("message", "Failed to update vehicle.");
+            response.put("message", "Failed to update vehicle.");
         }
-
-        return "vehicleupdate";
+        return response;
     }
 
     @GetMapping("/Userinsertmenu")

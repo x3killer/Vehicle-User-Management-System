@@ -28,6 +28,8 @@
       margin-top: 0px;
     }
   </style>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 
@@ -43,9 +45,9 @@
   </div>
 
   <div class="form-container">
-    <form th:action="@{/updateuser}" method="get">
+    <form id="searchForm" th:action="@{/updateuser}" method="get">
       <div class="input-group mb-3">
-        <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Enter IC Number" th:value="${userDetails != null ? userDetails.userId : ''}" required>
+        <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Enter IC Number" pattern="\d{6}-\d{2}-\d{4}" title="IC Number must be in the format XXXXXX-XX-XXXX where X is a digit" required>
         <div class="col-md-3 mb-2 btn-margin">
           <button type="submit" class="btn btn-primary btn-block">Search</button>
         </div>
@@ -53,10 +55,10 @@
     </form>
   </div>
 
-  <div th:if="${userDetails != null}" class="form-container">
+  <div id="userDetailsSection" th:if="${userDetails != null}" class="form-container">
     <h3>User Found</h3>
-    <form th:action="@{/updateUser}" method="post">
-      <input type="hidden" name="user_id" th:value="${userDetails.userId}"/>
+    <form id="updateUserForm">
+      <input type="hidden" name="user_id" id="user_id_hidden" th:value="${userDetails.userId}" />
 
       <div class="form-group">
         <label for="first_name">First Name</label>
@@ -73,18 +75,53 @@
         <input type="text" id="phoneNo" name="phoneNo" class="form-control" th:value="${userDetails.phoneNo}" required>
       </div>
 
-      <button type="submit" class="btn btn-success update-button">Update User</button>
+      <button type="button" id="updateButton" class="btn btn-success update-button">Update User</button>
     </form>
   </div>
 
   <!-- Message Display -->
-  <div th:if="${message}" class="alert alert-info mt-4">
-    <p th:text="${message}"></p>
+  <div id="messageSection" class="alert alert-info mt-4" style="display: none;">
+    <p id="messageText"></p>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var csrfToken = $('meta[name="_csrf"]').attr('content');
+    var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+    $('#updateButton').on('click', function() {
+      $.ajax({
+        url: '/demo-0.0.1-SNAPSHOT/updateUser',
+        type: 'POST',
+        headers: {
+          [csrfHeader]: csrfToken
+        },
+        data: $('#updateUserForm').serialize(),
+        success: function(response) {
+          $('#messageText').text(response.message);
+          $('#messageSection').show();
+        },
+        error: function(xhr, status, error) {
+          $('#messageText').text('An error occurred: ' + error);
+          $('#messageSection').show();
+        }
+      });
+    });
+
+    $('#searchForm').on('submit', function(event) {
+      var userId = $('#user_id').val();
+      var pattern = /^\d{6}-\d{2}-\d{4}$/;
+      if (!userId.match(pattern)) {
+        event.preventDefault(); // Prevent form submission
+        $('#messageText').text('Invalid IC Number format. It should be in the format XXXXXX-XX-XXXX.');
+        $('#messageSection').show();
+      }
+    });
+  });
+</script>
 </body>
 </html>

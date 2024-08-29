@@ -234,20 +234,19 @@ public class MyController {
 
 
     @PostMapping("/updateVehicle")
-    public String updateVehicle(@RequestParam("plateNo") String plateNo,
-                                @RequestParam("vehicleType") String vehicleType,
-                                @RequestParam("brand") String brand,
-                                @RequestParam("model") String model,
-                                Model modelAttribute) {
-
+    @ResponseBody
+    public Map<String, String> updateVehicle(@RequestParam("plateNo") String plateNo,
+                                             @RequestParam("vehicleType") String vehicleType,
+                                             @RequestParam("brand") String brand,
+                                             @RequestParam("model") String model) {
         boolean isUpdated = userService.updateVehicle(plateNo, vehicleType, brand, model);
+        Map<String, String> response = new HashMap<>();
         if (isUpdated) {
-            modelAttribute.addAttribute("message", "Vehicle updated successfully.");
+            response.put("message", "Vehicle updated successfully.");
         } else {
-            modelAttribute.addAttribute("message", "Failed to update vehicle.");
+            response.put("message", "Failed to update vehicle.");
         }
-
-        return "updatevehicle";
+        return response;
     }
 
     @GetMapping("/updateuser")
@@ -266,23 +265,22 @@ public class MyController {
     }
 
     @PostMapping("/updateUser")
-    public String updateUser(@RequestParam("user_id") String user_id,
-                             @RequestParam("first_name") String first_name,
-                             @RequestParam("last_name") String last_name,
-                             @RequestParam("phoneNo") String phoneNo,
-                             Model modelAttribute) {
-
-        System.out.println("Received request to update user with ID: " + user_id); // Debugging
+    @ResponseBody
+    public Map<String, String> updateUser(@RequestParam("user_id") String user_id,
+                                          @RequestParam("first_name") String first_name,
+                                          @RequestParam("last_name") String last_name,
+                                          @RequestParam("phoneNo") String phoneNo) {
+        Map<String, String> response = new HashMap<>();
+        System.out.println("Received request to update user with ID: " + user_id);
         boolean isUpdated = userService.updateUser(user_id, first_name, last_name, phoneNo);
         if (isUpdated) {
-            modelAttribute.addAttribute("message", "User updated successfully.");
+            response.put("message", "User updated successfully.");
             System.out.println("User updated successfully.");
         } else {
-            modelAttribute.addAttribute("message", "Failed to update user.");
+            response.put("message", "Failed to update user.");
             System.err.println("Failed to update user with ID: " + user_id);
         }
-
-        return "updateuser";
+        return response;
     }
 
     @GetMapping("/registration")
